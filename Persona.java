@@ -142,4 +142,36 @@ public class Persona{
     public String toString(){
         return nombre + "-" + apellido_Paterno + "-" +apellido_Materno + "-"+ direcciones + "-"+ telefono + "-" + movil + "-" +correo_Electronico + "-" + compañia + "-" + puesto + "-" + URL +"-" + fb + "-" + ig + "-" + notas + "-" + citas;
     }
+    public void toStringBonito(Persona p, String msg){
+        Nota notas = new Nota(p.getnotas());
+        String [] notadeP=notas.toString().split("&",-1);
+        System.out.println(msg);
+        System.out.println("Nombre: " + p.getnombre());
+        System.out.println("Apellido Paterno: " + p.getapellido_Paterno());
+        System.out.println("Apellido Materno: " + p.getapellido_Materno());
+        System.out.println("Dirección: " + p.getdirecciones());
+        System.out.println("Telefono: " + p.gettelefeno());
+        System.out.println("Movil: " + p.getmovil());
+        System.out.println("Correo electronico: " + p.getcorreo_Electronico());
+        System.out.println("Compañia: " + p.getCompañia());
+        System.out.println("Puesto: " + p.getPuesto());
+        System.out.println("URL: " + p.getURL());
+        System.out.println("FB: " + p.getFB());
+        System.out.println("IG: " + p.getIG());
+        String[] citaPersona = citas.toString().split("&");
+        System.out.println("Notas:");
+        for(int i=0;i<notadeP.length;i++){
+            if(notadeP[i].equals("")){
+                break;
+            }
+            System.out.println(notadeP[i]);
+        }
+        System.out.println("Cita(s): ");
+        for(int i=0;i<citaPersona.length;i++){
+            String[] datosCita = citaPersona[i].split("#");
+            System.out.println("Titulo: " + datosCita[i]);
+            System.out.println("Fecha: " + datosCita[i+1]);
+            System.out.println("Hora: " + datosCita[i+2]);
+        }
+    }
 }

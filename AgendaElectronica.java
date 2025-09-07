@@ -1,9 +1,16 @@
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 public class AgendaElectronica {
     public static int menu (int respuestaMenu, Scanner scanner){
@@ -105,6 +112,51 @@ public class AgendaElectronica {
                 p.setfb(scanner.nextLine());
                 System.out.print("IG:");
                 p.setIG(scanner.nextLine());
+                System.out.print("¿Desea agregar citas? (S/N):");
+                String citas="";
+                if (scanner.nextLine().equalsIgnoreCase("S")){
+                    do {
+                        try {
+                            System.out.print("¿Cuantas citas deseas agregar?:");
+                            int total_citas=scanner.nextInt();
+                            scanner.nextLine();
+                            int num=0;
+                            for(int i=0;i<total_citas;i++){
+                                Cita cita =new Cita(null, null, null);
+                                num=i+1;
+                                System.out.println("==== Registro de cita " + num + " ====");
+                                System.out.print("Título:");
+                                String temp=scanner.nextLine();
+                                cita.setTitulo(temp);
+                                citas=citas+ temp +"#";
+                                System.out.print("Fecha:");
+                                temp=scanner.nextLine();
+                                cita.setFecha(temp);
+                                citas=citas+ temp +"#";
+                                System.out.print("Hora:");
+                                temp=scanner.nextLine();
+                                cita.setHora(temp);
+                                citas=citas+ temp +"&";
+                                p.setCitas(citas);
+                                System.out.println("====Cita====");
+                                System.out.println("Título: " + cita.getTitulo());
+                                System.out.println("Fecha: " + cita.getDate());
+                                System.out.println("Hora: " + cita.getHora());
+                            }
+                            flag_citas=false;
+                            }
+                            catch(InputMismatchException e){
+                                flag=true;
+                                scanner.nextLine();
+                                System.out.println("Solo números.");
+                            }
+                            catch (Exception e) {
+                            }
+                    } while (flag_citas==true);
+                }
+                else {
+                    p.setCitas(citas);
+                }
                 System.out.print("Desea agregar notas: (S/N)");
                 String notas="";
                 if (scanner.nextLine().equalsIgnoreCase("S")){
@@ -119,6 +171,8 @@ public class AgendaElectronica {
                                 System.out.println("==== Registro de nota " + num + " ====");
                                 System.out.print("Descripción:");
                                 String notas_act=scanner.nextLine();
+                                System.out.println("====Nota====");
+                                System.out.println("Descripción: " + notas_act);
                                 notas=notas + notas_act +"&";
                                 p.setNotas(notas);
                             }
@@ -135,37 +189,6 @@ public class AgendaElectronica {
                 }
                 else{
                     p.setNotas(notas);
-                }
-                System.out.print("¿Desea agregar citas? (S/N):");
-                String citas="";
-                if (scanner.nextLine().equalsIgnoreCase("S")){
-                    do {
-                        try {
-                            System.out.print("¿Cuantas citas deseas agregar?:");
-                            int total_citas=scanner.nextInt();
-                            scanner.nextLine();
-                            int num=0;
-                            for(int i=0;i<total_citas;i++){
-                                num=i+1;
-                                System.out.println("==== Registro de cita " + num + " ====");
-                                System.out.print("Descripción:");
-                                String cita_act=scanner.nextLine();
-                                citas=citas+ cita_act +"&";
-                                p.setCitas(citas);
-                            }
-                            flag_notas=false;
-                            }
-                            catch(InputMismatchException e){
-                                flag=true;
-                                scanner.nextLine();
-                                System.out.println("Solo números.");
-                            }
-                            catch (Exception e) {
-                            }
-                    } while (flag_notas==true);
-                }
-                else {
-                    p.setCitas(citas);
                 }
                 System.out.print("Presiona enter para terminar :)");
                 scanner.nextLine();
@@ -193,21 +216,56 @@ public class AgendaElectronica {
     public static void escribirArchivo(String str){
         try {
             File archivo= new File("ejemplo.data");
-            if (archivo.createNewFile ( ) ) {
+            if (archivo.createNewFile()) {
                 System.out.println("Archivo creado");
-            }else {
-                System.out.println();
             }
-            FileWriter fw = new FileWriter( " ejemplo.data" ,true ) ;
-            BufferedWriter bw = new BufferedWriter ( fw ) ;
-            bw. newLine () ;
-            bw.write(str) ;
-            bw.close() ;
-            System .out.println ( "Listo" ) ;
-            } catch ( IOException e ) {
-            System.out.println ( "Ocurrio un error al escribir " ) ;
-            e.printStackTrace( ) ;
+            FileWriter fw = new FileWriter("ejemplo.data", true);
+            BufferedWriter bw = new BufferedWriter(fw);
+            bw.newLine();
+            bw.write(str);
+            bw.close();
+            System.out.println("Listo");
+        } catch (IOException e) {
+            System.out.println("Ocurrió un error al escribir");
+            e.printStackTrace();
         }
+    }
+    public static List<Persona> leerArchivo(String nombreArchivo) {
+        List<Persona> personas = new ArrayList<>();
+        try {
+            List<String> lineas = Files.readAllLines(Paths.get(nombreArchivo));
+            for (String linea : lineas) {
+                if (linea.trim().isEmpty()) continue; // Ignorar líneas vacías
+                String[] partes = linea.split("-"); // Split con límite para preservar notas
+                Persona p = new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                p.setnombre(partes[0]);
+                p.setapellido_Paterno(partes[1]);
+                p.setapellido_materno(partes[2]);
+                p.setdirecciones(partes[3]);
+                p.settelefono(partes[4]);
+                p.setmovil(partes[5]);
+                p.setcorreoElectronico(partes[6]);
+                p.setCompañia(partes[7]);
+                p.setPuesto(partes[8]);
+                p.setURL(partes[9]);
+                p.setfb(partes[10]);
+                p.setIG(partes[11]);
+                p.setNotas(partes[12]);
+                p.setCitas(partes[13]);
+                personas.add(p);
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo");
+        }
+        return personas;
+    }
+    public static Persona buscarPersona(List <Persona> personas, Persona buscado){
+        for (Persona persona : personas) {
+            if(persona.getnombre().equals(buscado.getnombre()) && persona.getapellido_Paterno().equals(buscado.getapellido_Paterno()) && persona.getapellido_Materno().equals(buscado.getapellido_Materno())){
+                return persona;
+            }
+        }
+        return null;
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -225,14 +283,26 @@ public class AgendaElectronica {
                     break;
                 //Caso 2.Buscar registro
                 case 2:
-                    System.out.println("Caso2");
-                    System.out.println("");
-                    respuestaMenu=menu(respuestaMenu, scanner);
+                Persona buscado =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere buscar");
+                System.out.print("Nombre: ");
+                buscado.setnombre(scanner.nextLine());
+                System.out.print("Apellido Paterno: ");
+                buscado.setapellido_Paterno(scanner.nextLine());
+                System.out.print("Apellido Materno: ");
+                buscado.setapellido_materno(scanner.nextLine());
+                List <Persona> list= leerArchivo("ejemplo.data");
+                buscado=buscarPersona(list, buscado);
+                if (buscado != null) {
+                    buscado.toStringBonito(buscado, "\nResultado");
+                } else {
+                    System.out.println("No se encontró el registro buscado.");
+                }
+                respuestaMenu=menu(respuestaMenu, scanner);
                     break;
                 //Caso 3. Eliminar registro
                 case 3:
-                    System.out.println("Caso3");
-                    respuestaMenu=menu(respuestaMenu, scanner);
+                    respuestaMenu = menu(respuestaMenu, scanner);
                     break;
                 //Caso 4. Modificar registro
                 case 4:

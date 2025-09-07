@@ -1,13 +1,14 @@
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 
 public class Cita{
     private String titulo;
-    private Date fecha;// dd/mm/AAAA
-    private Timestamp hora; // HH:mm
+    private String fecha;// dd/mm/AAAA
+    private String hora; // HH:mm
 
-    public Cita(String Titulo, Date fecha, Timestamp hora){
+    public Cita(String Titulo, String fecha, String hora){
         this.titulo = Titulo;
         this.fecha = fecha;
         this.hora = hora;
@@ -17,10 +18,10 @@ public class Cita{
     public void setTitulo(String titulo){
         this.titulo=titulo;
     }
-    public void setFecha(Date fecha){
+    public void setFecha(String fecha){
         this.fecha=fecha;
     }
-    public void setHora(Timestamp hora){
+    public void setHora(String hora){
         this.hora=hora;
     }
 
@@ -28,10 +29,14 @@ public class Cita{
     public String getTitulo(){
         return this.titulo;
     }
-    public Date getDate(){
+    public String getDate(){
         return this.fecha;
     }
-    public Timestamp getHora(){
+    public String getHora(){
         return this.hora;
+    }
+    @Override
+    public String toString(){
+        return this.titulo+ "#" +this.fecha + "#" +this.hora;
     }
 }
