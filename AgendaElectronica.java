@@ -230,7 +230,30 @@ public class AgendaElectronica {
             e.printStackTrace();
         }
     }
-    public static List<Persona> leerArchivo(String nombreArchivo) {
+    public static void escribirArchivo(List <Persona> personas){
+        try {
+            File archivo= new File("ejemplo.data");
+            if (archivo.createNewFile()) {
+                System.out.println("No se encontro el archivo.");
+            }
+            else{
+                FileWriter fw = new FileWriter("ejemplo.data", false);
+                BufferedWriter bw = new BufferedWriter(fw);
+                for (int i=0;i<personas.size();i++){
+                    if(i>0){
+                        bw.newLine();
+                    }
+                    bw.write(personas.get(i).toString());
+                }
+                bw.close();
+                System.out.println("Listo");
+            }
+        } catch (IOException e) {
+            System.out.println("Ocurrió un error al escribir");
+            e.printStackTrace();
+        }
+    }
+    public static List<Persona> leerPersonas(String nombreArchivo) {
         List<Persona> personas = new ArrayList<>();
         try {
             List<String> lineas = Files.readAllLines(Paths.get(nombreArchivo));
@@ -259,6 +282,40 @@ public class AgendaElectronica {
         }
         return personas;
     }
+    public static List<Persona> eliminaPersona(String nombreArchivo, Persona aeliminar) {
+        List<Persona> personas = new ArrayList<>();
+        try {
+            List<String> lineas = Files.readAllLines(Paths.get(nombreArchivo));
+            for (String linea : lineas) {
+                if (linea.trim().isEmpty()) continue; // Ignorar líneas vacías
+                String[] partes = linea.split("-"); // Split con límite para preservar notas
+                if(partes[0].equals(aeliminar.getnombre()) && partes[1].equals(aeliminar.getapellido_Paterno()) && partes[2].equals(aeliminar.getapellido_Materno())){
+                    System.out.println(aeliminar.getnombre());
+                    continue;
+                }
+                Persona p = new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                p.setnombre(partes[0]);
+                p.setapellido_Paterno(partes[1]);
+                p.setapellido_materno(partes[2]);
+                p.setdirecciones(partes[3]);
+                p.settelefono(partes[4]);
+                p.setmovil(partes[5]);
+                p.setcorreoElectronico(partes[6]);
+                p.setCompañia(partes[7]);
+                p.setPuesto(partes[8]);
+                p.setURL(partes[9]);
+                p.setfb(partes[10]);
+                p.setIG(partes[11]);
+                p.setNotas(partes[12]);
+                p.setCitas(partes[13]);
+                personas.add(p);
+                //System.out.println(p.getnombre());
+            }
+        } catch (IOException e) {
+            System.out.println("Error al leer el archivo");
+        }
+        return personas;
+    }
     public static Persona buscarPersona(List <Persona> personas, Persona buscado){
         for (Persona persona : personas) {
             if(persona.getnombre().equals(buscado.getnombre()) && persona.getapellido_Paterno().equals(buscado.getapellido_Paterno()) && persona.getapellido_Materno().equals(buscado.getapellido_Materno())){
@@ -270,6 +327,7 @@ public class AgendaElectronica {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int respuestaMenu=0;
+        List <Persona> encontradosArchivo;
         respuestaMenu=menu(respuestaMenu, scanner);
         while (respuestaMenu!=6){
             switch (respuestaMenu) {
@@ -283,25 +341,43 @@ public class AgendaElectronica {
                     break;
                 //Caso 2.Buscar registro
                 case 2:
-                Persona buscado =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere buscar");
-                System.out.print("Nombre: ");
-                buscado.setnombre(scanner.nextLine());
-                System.out.print("Apellido Paterno: ");
-                buscado.setapellido_Paterno(scanner.nextLine());
-                System.out.print("Apellido Materno: ");
-                buscado.setapellido_materno(scanner.nextLine());
-                List <Persona> list= leerArchivo("ejemplo.data");
-                buscado=buscarPersona(list, buscado);
-                if (buscado != null) {
-                    buscado.toStringBonito(buscado, "\nResultado");
-                } else {
-                    System.out.println("No se encontró el registro buscado.");
-                }
-                respuestaMenu=menu(respuestaMenu, scanner);
+                    Persona buscado =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                    System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere buscar");
+                    System.out.print("Nombre: ");
+                    buscado.setnombre(scanner.nextLine());
+                    System.out.print("Apellido Paterno: ");
+                    buscado.setapellido_Paterno(scanner.nextLine());
+                    System.out.print("Apellido Materno: ");
+                    buscado.setapellido_materno(scanner.nextLine());
+                    encontradosArchivo= leerPersonas("ejemplo.data");
+                    buscado=buscarPersona(encontradosArchivo, buscado);
+                    if (buscado != null) {
+                        buscado.toStringBonito(buscado, "\nResultado");
+                    } else {
+                        System.out.println("No se encontró el registro buscado.");
+                    }
+                    encontradosArchivo.clear();
+                    respuestaMenu=menu(respuestaMenu, scanner);
                     break;
                 //Caso 3. Eliminar registro
                 case 3:
+                    Persona eliminado =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                    System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere buscar");
+                    System.out.print("Nombre: ");
+                    eliminado.setnombre(scanner.nextLine());
+                    System.out.print("Apellido Paterno: ");
+                    eliminado.setapellido_Paterno(scanner.nextLine());
+                    System.out.print("Apellido Materno: ");
+                    eliminado.setapellido_materno(scanner.nextLine());
+                    encontradosArchivo= leerPersonas("ejemplo.data");
+                    eliminado=buscarPersona(encontradosArchivo, eliminado);
+                    if (eliminado != null) {
+                        List <Persona> no_eliminados=eliminaPersona("ejemplo.data", eliminado);
+                        escribirArchivo(no_eliminados);
+                    } else {
+                        System.out.println("No se encontró el registro a eliminar.");
+                    }
+                    encontradosArchivo.clear();
                     respuestaMenu = menu(respuestaMenu, scanner);
                     break;
                 //Caso 4. Modificar registro
