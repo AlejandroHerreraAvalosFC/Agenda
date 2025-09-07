@@ -1,3 +1,7 @@
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
@@ -72,6 +76,8 @@ public class AgendaElectronica {
     }
     public static Persona menuCrearRegistro(Scanner scanner, Persona p){
         boolean flag=true;
+        boolean flag_notas=true;
+        boolean flag_citas=true;
         do {
             try {
                 System.out.println("=====Datos del contacto=====");
@@ -99,6 +105,70 @@ public class AgendaElectronica {
                 p.setfb(scanner.nextLine());
                 System.out.print("IG:");
                 p.setIG(scanner.nextLine());
+                System.out.print("Desea agregar notas: (S/N)");
+                String notas="";
+                if (scanner.nextLine().equalsIgnoreCase("S")){
+                    do {
+                        try {
+                            System.out.print("¿Cuantas notas deseas agregar?:");
+                            int total_notas=scanner.nextInt();
+                            scanner.nextLine();
+                            int num=0;
+                            for(int i=0;i<total_notas;i++){
+                                num=i+1;
+                                System.out.println("==== Registro de nota " + num + " ====");
+                                System.out.print("Descripción:");
+                                String notas_act=scanner.nextLine();
+                                notas=notas + notas_act +"&";
+                                p.setNotas(notas);
+                            }
+                            flag_notas=false;
+                        }
+                        catch(InputMismatchException e){
+                            flag=true;
+                            scanner.nextLine();
+                            System.out.println("Solo números.");
+                        }
+                        catch (Exception e) {
+                        }
+                    } while (flag_notas==true);
+                }
+                else{
+                    p.setNotas(notas);
+                }
+                System.out.print("¿Desea agregar citas? (S/N):");
+                String citas="";
+                if (scanner.nextLine().equalsIgnoreCase("S")){
+                    do {
+                        try {
+                            System.out.print("¿Cuantas citas deseas agregar?:");
+                            int total_citas=scanner.nextInt();
+                            scanner.nextLine();
+                            int num=0;
+                            for(int i=0;i<total_citas;i++){
+                                num=i+1;
+                                System.out.println("==== Registro de cita " + num + " ====");
+                                System.out.print("Descripción:");
+                                String cita_act=scanner.nextLine();
+                                citas=citas+ cita_act +"&";
+                                p.setCitas(citas);
+                            }
+                            flag_notas=false;
+                            }
+                            catch(InputMismatchException e){
+                                flag=true;
+                                scanner.nextLine();
+                                System.out.println("Solo números.");
+                            }
+                            catch (Exception e) {
+                            }
+                    } while (flag_notas==true);
+                }
+                else {
+                    p.setCitas(citas);
+                }
+                System.out.print("Presiona enter para terminar :)");
+                scanner.nextLine();
                 System.out.println();
                 flag=false;
             }
@@ -120,6 +190,25 @@ public class AgendaElectronica {
         } while (flag==true);
         return p;
     }
+    public static void escribirArchivo(String str){
+        try {
+            File archivo= new File("ejemplo.data");
+            if (archivo.createNewFile ( ) ) {
+                System.out.println("Archivo creado");
+            }else {
+                System.out.println();
+            }
+            FileWriter fw = new FileWriter( " ejemplo.data" ,true ) ;
+            BufferedWriter bw = new BufferedWriter ( fw ) ;
+            bw. newLine () ;
+            bw.write(str) ;
+            bw.close() ;
+            System .out.println ( "Listo" ) ;
+            } catch ( IOException e ) {
+            System.out.println ( "Ocurrio un error al escribir " ) ;
+            e.printStackTrace( ) ;
+        }
+    }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int respuestaMenu=0;
@@ -129,7 +218,7 @@ public class AgendaElectronica {
                 //Caso 1.Añadir registro
                 case 1:
                     System.out.println("Caso1");
-                    Persona p =new Persona(null, null, null, null, null, null, null, null, null, null, null, null);
+                    Persona p =new Persona(null, null, null, null, null, null, null, null, null, null, null, null,null,null);
                     p = menuCrearRegistro(scanner,p);
                     escribirArchivo(p.toString());
                     respuestaMenu=menu(respuestaMenu, scanner);
@@ -137,6 +226,7 @@ public class AgendaElectronica {
                 //Caso 2.Buscar registro
                 case 2:
                     System.out.println("Caso2");
+                    System.out.println("");
                     respuestaMenu=menu(respuestaMenu, scanner);
                     break;
                 //Caso 3. Eliminar registro

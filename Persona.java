@@ -14,9 +14,11 @@ public class Persona{
     private String ig;
     private String compañia;
     private String puesto;
+    private String notas;
+    private String citas;
     //URL, IG, Fck
 
-    public Persona(String nombre,String apellido_Paterno, String apellido_Materno, String direcciones, String telefono, String movil, String correo_Electronico, String compañia, String puesto,String URL, String fb, String ig){
+    public Persona(String nombre,String apellido_Paterno, String apellido_Materno, String direcciones, String telefono, String movil, String correo_Electronico, String compañia, String puesto,String URL, String fb, String ig, String notas, String citas){
         this.nombre=nombre;
         this.apellido_Materno= apellido_Materno;
         this.apellido_Paterno= apellido_Paterno;
@@ -29,6 +31,9 @@ public class Persona{
         this.ig=ig;
         this.compañia=compañia;
         this.puesto=puesto;
+        this.notas=notas;
+        this.citas=citas;
+
     }
     /*
      * Getters de Persona
@@ -67,6 +72,12 @@ public class Persona{
     }
     public String getFB(){
         return this.fb;
+    }
+    public String getCitas(){
+        return this.citas;
+    }
+    public String getnotas(){
+        return this.notas;
     }
 
     /*
@@ -114,6 +125,12 @@ public class Persona{
     public void setPuesto(String puesto){
         this.puesto=puesto;
     }
+    public void setCitas(String citas){
+        this.citas=citas;
+    }
+    public void setNotas(String notas){
+        this.notas=notas;
+    }
     //Getters
     public String getCompañia(){
         return this.compañia;
@@ -123,6 +140,6 @@ public class Persona{
     }
     @Override
     public String toString(){
-        return nombre + ", " + apellido_Paterno + ", " +apellido_Materno + ", "+ direcciones + ", "+ telefono + ", " + movil + ", " +correo_Electronico + ", " + compañia + ", " + puesto + ", "+ URL +", " + fb + ", " + ig ;
+        return nombre + "-" + apellido_Paterno + "-" +apellido_Materno + "-"+ direcciones + "-"+ telefono + "-" + movil + "-" +correo_Electronico + "-" + compañia + "-" + puesto + "-" + URL +"-" + fb + "-" + ig + "-" + notas + "-" + citas;
     }
 }
