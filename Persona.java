@@ -158,20 +158,25 @@ public class Persona{
         System.out.println("URL: " + p.getURL());
         System.out.println("FB: " + p.getFB());
         System.out.println("IG: " + p.getIG());
-        String[] citaPersona = citas.toString().split("&");
         System.out.println("Notas:");
         for(int i=0;i<notadeP.length;i++){
             if(notadeP[i].equals("")){
                 break;
             }
-            System.out.println(notadeP[i]);
+            System.out.println("  "+notadeP[i]);
         }
+        String[] citaPersona = citas.toString().split("&",-1);
         System.out.println("Cita(s): ");
         for(int i=0;i<citaPersona.length;i++){
+            if(citaPersona[i].equals("")) {
+                continue;
+            }
             String[] datosCita = citaPersona[i].split("#");
-            System.out.println("Titulo: " + datosCita[i]);
-            System.out.println("Fecha: " + datosCita[i+1]);
-            System.out.println("Hora: " + datosCita[i+2]);
+            if(datosCita.length == 3) {
+                System.out.println("  Título: " + datosCita[0]);
+                System.out.println("  Fecha: " + datosCita[1]);
+                System.out.println("  Hora: " + datosCita[2]);
+            }
         }
     }
 }

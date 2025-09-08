@@ -287,10 +287,9 @@ public class AgendaElectronica {
         try {
             List<String> lineas = Files.readAllLines(Paths.get(nombreArchivo));
             for (String linea : lineas) {
-                if (linea.trim().isEmpty()) continue; // Ignorar líneas vacías
-                String[] partes = linea.split("-"); // Split con límite para preservar notas
+                if (linea.trim().isEmpty()) continue; 
+                String[] partes = linea.split("-");
                 if(partes[0].equals(aeliminar.getnombre()) && partes[1].equals(aeliminar.getapellido_Paterno()) && partes[2].equals(aeliminar.getapellido_Materno())){
-                    System.out.println(aeliminar.getnombre());
                     continue;
                 }
                 Persona p = new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
@@ -316,6 +315,7 @@ public class AgendaElectronica {
         }
         return personas;
     }
+
     public static Persona buscarPersona(List <Persona> personas, Persona buscado){
         for (Persona persona : personas) {
             if(persona.getnombre().equals(buscado.getnombre()) && persona.getapellido_Paterno().equals(buscado.getapellido_Paterno()) && persona.getapellido_Materno().equals(buscado.getapellido_Materno())){
@@ -323,6 +323,108 @@ public class AgendaElectronica {
             }
         }
         return null;
+    }
+    public static Persona actualizarPersona(Persona actual, Persona nuevo, Scanner scanner){
+        String res;
+        System.out.print("Nuevo Nombre: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setnombre(actual.getnombre());
+        }
+        else{
+            nuevo.setnombre(res);
+        }
+        System.out.print("Nuevo Apellido Paterno: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setapellido_Paterno(actual.getapellido_Paterno());
+        }
+        else{
+            nuevo.setapellido_Paterno(res);
+        }
+        System.out.print("Nuevo Apellido Materno: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setapellido_materno(actual.getapellido_Materno());
+        }
+        else{
+            nuevo.setapellido_materno(res);
+        }
+        System.out.print("Nuevo Dirección: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setdirecciones(actual.getdirecciones());
+        }
+        else{
+            nuevo.setdirecciones(res);;
+        }
+        System.out.print("Nuevo Telefono: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.settelefono(actual.gettelefeno());;
+        }
+        else{
+            nuevo.settelefono(res);;
+        }
+        System.out.print("Nuevo Movil: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setmovil(actual.getmovil());
+        }
+        else{
+            nuevo.setmovil(res);
+        }
+        System.out.print("Nuevo Correo electronico: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setcorreoElectronico(actual.getcorreo_Electronico());
+        }
+        else{
+            nuevo.setcorreoElectronico(res);
+        }
+        System.out.print("Nueva Compañia: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setCompañia(actual.getCompañia());
+        }
+        else{
+            nuevo.setCompañia(res);
+        }
+        System.out.print("Nuevo Puesto: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setPuesto(actual.getPuesto());
+        }
+        else{
+            nuevo.setmovil(res);
+        }
+        System.out.print("Nuevo URL: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setURL(actual.getURL());
+        }
+        else{
+            nuevo.setURL(res);
+        }
+        System.out.print("Nuevo Facebook: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setfb(actual.getFB());
+        }
+        else{
+            nuevo.setfb(res);
+        }
+        System.out.print("Nuevo Instagram: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+        res=scanner.nextLine();
+        if (res.equals("")){
+            nuevo.setIG(actual.getIG());
+        }
+        else{
+            nuevo.setIG(res);
+        }
+        nuevo.setCitas(actual.getCitas());
+        nuevo.setNotas(actual.getnotas());
+        return nuevo;
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -362,7 +464,7 @@ public class AgendaElectronica {
                 //Caso 3. Eliminar registro
                 case 3:
                     Persona eliminado =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
-                    System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere buscar");
+                    System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere eliminar");
                     System.out.print("Nombre: ");
                     eliminado.setnombre(scanner.nextLine());
                     System.out.print("Apellido Paterno: ");
@@ -383,6 +485,28 @@ public class AgendaElectronica {
                 //Caso 4. Modificar registro
                 case 4:
                     System.out.println("Caso4");
+                    Persona modificado =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                    Persona actual =new Persona(null, null, null, null, null, null, null, null, null, null, null, null, null, null);
+                    System.out.println("Ingrese el nombre, apellido paterno y apellido materno de la persona que quiere modificar: ");
+                    System.out.println("(Solo se puede modificar el nombre, apellido Paterno, apellido Materno, Dirección, Telefono, Movil, Correo, Compañia, Puesto, Url, FB e IG)");
+                    System.out.print("Nombre: ");
+                    actual.setnombre(scanner.nextLine());
+                    System.out.print("Apellido Paterno: ");
+                    actual.setapellido_Paterno(scanner.nextLine());
+                    System.out.print("Apellido Materno: ");
+                    actual.setapellido_materno(scanner.nextLine());
+                    encontradosArchivo= leerPersonas("ejemplo.data");
+                    actual=buscarPersona(encontradosArchivo, actual);
+                    if (actual!=null){
+                        List<Persona> actuales=eliminaPersona("ejemplo.data", actual);
+                        modificado=actualizarPersona(actual, modificado, scanner);
+                        actuales.add(modificado);
+                        escribirArchivo(actuales);
+                    }
+                    else{
+                        System.out.println("No se encontró el registro a modificar.");
+                    }
+                    encontradosArchivo.clear();
                     respuestaMenu=menu(respuestaMenu, scanner);
                     break;
                 //Caso 5. Imprimir calendario
