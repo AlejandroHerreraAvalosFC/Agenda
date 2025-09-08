@@ -1,8 +1,3 @@
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.util.Date;
-import java.util.List;
-
 public class Cita{
     private String titulo;
     private String fecha;// dd/mm/AAAA

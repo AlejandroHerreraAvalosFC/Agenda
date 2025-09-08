@@ -360,6 +360,11 @@ public class AgendaElectronica {
         }
         System.out.print("Nuevo Telefono: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
         res=scanner.nextLine();
+        while (!telefonoValido(res)) {
+            System.out.println("No es un telefono valido. Vuelve a intentarlo ");
+            System.out.print("Nuevo Telefono: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+            res=scanner.nextLine();
+        }
         if (res.equals("")){
             nuevo.settelefono(actual.gettelefeno());;
         }
@@ -368,6 +373,11 @@ public class AgendaElectronica {
         }
         System.out.print("Nuevo Movil: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
         res=scanner.nextLine();
+        while (!telefonoValido(res)) {
+            System.out.println("No es un movil valido. Vuelve a intentarlo.");
+            System.out.print("Nuevo Movil: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
+            res=scanner.nextLine();
+        }
         if (res.equals("")){
             nuevo.setmovil(actual.getmovil());
         }
@@ -425,6 +435,18 @@ public class AgendaElectronica {
         nuevo.setCitas(actual.getCitas());
         nuevo.setNotas(actual.getnotas());
         return nuevo;
+    }
+    public static boolean telefonoValido(String telefono){
+        if(telefono.equals("")){
+            return true;
+        }
+        if(telefono.length()!=10){
+            return false;
+        }
+        if(telefono.charAt(0)!=telefono.charAt(1)){
+            return false;
+        }
+        return true;    
     }
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
