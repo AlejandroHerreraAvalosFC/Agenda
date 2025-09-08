@@ -20,6 +20,11 @@ public class Calendario{
     public void setMes(int mes){
         this.mes=mes;
     }
+    /*
+     * getCalendario imprime un calendario del mes y el año deseado
+     * @param año año deseado
+     * @param mes mes deseado
+     */
     public void getCalendario(int año, int mes){
         System.out.println("Calendario de " + getMes(mes) +" de" + año);
         System.out.println("Lu Ma Mi Ju Vi Sa Do");
@@ -38,6 +43,11 @@ public class Calendario{
         }
         System.out.println("");
     }
+    /*
+     * getMes basicamente un arreglo de los meses 
+     * @param mes mes solicitado
+     * @return te da el nombre del mes solicitado
+     */
     public String getMes(int mes){
         String [] meses ={"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
         return meses[mes-1];

@@ -1,18 +1,22 @@
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
-import java.util.stream.Collectors;
-
+/*
+ * Agenda electronica: Registra personas, elimina personas, modifica personas, cosulta personas e imprime un bonito calendario
+ */
 public class AgendaElectronica {
+    /*
+     * Menú pricipal. 4 opciones, solo recibe números
+     * @param respuestaMenu la opción deseada, solo recibe números
+     * @param scanner un objeto scanner
+     */
     public static int menu (int respuestaMenu, Scanner scanner){
         boolean flag=true;
         System.out.println("Seleccione la opción que desea:");
@@ -43,6 +47,14 @@ public class AgendaElectronica {
         scanner.nextLine();
         return respuestaMenu;
     }
+    /*
+     * Solo años mayores a 1900 para evitar errores
+     * Solicita el año y el mes del calendario que se quiere imprimir
+     * @param año
+     * @param mes
+     * @param scanner
+     * @param arrCalendario
+     */
     public static int [] menuCalendario(int año, int mes, Scanner scanner, int [] arrCalendario){
         boolean flag=true;
         do {
@@ -81,10 +93,18 @@ public class AgendaElectronica {
         scanner.nextLine();
         return arrCalendario;
     }
+    /*
+     * menuCrearRegistro menu al presionar la opción 1, sirve para "crear" a un objeto de tipo Persona
+     * de manera Correcta, en si sirve para escribir los atributos
+     * @param scanner objeto de tipo scaneer, pus pa' escanear
+     * @param p Objeto de tipo persona que va a ser "creado"
+     * @return p con sus atributos escritos por el ususario
+     */
     public static Persona menuCrearRegistro(Scanner scanner, Persona p){
         boolean flag=true;
         boolean flag_notas=true;
         boolean flag_citas=true;
+        String temp_num;
         do {
             try {
                 System.out.println("=====Datos del contacto=====");
@@ -97,9 +117,21 @@ public class AgendaElectronica {
                 System.out.print("Dirección:");
                 p.setdirecciones(scanner.nextLine());
                 System.out.print("Telefono:");
-                p.settelefono(scanner.nextLine());
+                temp_num=scanner.nextLine();
+                while (!telefonoValidoVacio(temp_num)) {
+                    System.out.println("No es un telefono valido. Vuelve a intentarlo ");
+                    System.out.print("Telefono:");
+                    temp_num=scanner.nextLine();
+                }
+                p.settelefono(temp_num);
                 System.out.print("Movil:");
-                p.setmovil(scanner.nextLine());
+                temp_num=scanner.nextLine();
+                while (!telefonoValidoVacio(temp_num)) {
+                    System.out.println("No es un movil valido. Vuelve a intentarlo ");
+                    System.out.print("Movil:");
+                    temp_num=scanner.nextLine();
+                }
+                p.setmovil(temp_num);
                 System.out.print("Correo Electrónico:");
                 p.setcorreoElectronico(scanner.nextLine());
                 System.out.print("Compañia:");
@@ -155,7 +187,7 @@ public class AgendaElectronica {
                     } while (flag_citas==true);
                 }
                 else {
-                    p.setCitas(citas);
+                    p.setCitas("&");
                 }
                 System.out.print("Desea agregar notas: (S/N)");
                 String notas="";
@@ -188,7 +220,7 @@ public class AgendaElectronica {
                     } while (flag_notas==true);
                 }
                 else{
-                    p.setNotas(notas);
+                    p.setNotas("&");
                 }
                 System.out.print("Presiona enter para terminar :)");
                 scanner.nextLine();
@@ -213,6 +245,11 @@ public class AgendaElectronica {
         } while (flag==true);
         return p;
     }
+    /*
+     * escribirArchivo sirve paar escribir un STRING en un archivo
+     * @param la string que se desea guardar
+     * @return void
+     */
     public static void escribirArchivo(String str){
         try {
             File archivo= new File("ejemplo.data");
@@ -230,6 +267,11 @@ public class AgendaElectronica {
             e.printStackTrace();
         }
     }
+    /*
+     * escribirArchivo sirve paar escribir un ARRAY de Personas en un archivo
+     * @param la lista de personas que se desea guardar
+     * @return void
+     */
     public static void escribirArchivo(List <Persona> personas){
         try {
             File archivo= new File("ejemplo.data");
@@ -253,6 +295,12 @@ public class AgendaElectronica {
             e.printStackTrace();
         }
     }
+    /*
+     * leerPersonas regresa una lista de persona que estaban "escritas" en un archivo.
+     * De un string las pasa a un objeto Persona y todos los objetos recavados se pasan a una lista
+     * @param nombreArchivo el nombre del archivo que se va a leer
+     * @return lista de objetos Persona
+     */
     public static List<Persona> leerPersonas(String nombreArchivo) {
         List<Persona> personas = new ArrayList<>();
         try {
@@ -282,6 +330,11 @@ public class AgendaElectronica {
         }
         return personas;
     }
+    /*
+     * eliminaPersona elimina una persona de un archivo y las personas restantes se pasan a una lista
+     * @param nombreArchivo nombre del archivo que se va a leer
+     * @aeliminar objeto persona que se busca eliminar, si no esta se regresa null
+     */
     public static List<Persona> eliminaPersona(String nombreArchivo, Persona aeliminar) {
         List<Persona> personas = new ArrayList<>();
         try {
@@ -315,7 +368,12 @@ public class AgendaElectronica {
         }
         return personas;
     }
-
+    /*
+     * buscaPersona de una lista de personas se itera sobre ella buscando a buscado, si esta se regresa 
+     * si no esta se regresa null
+     * @param personas lista de personas donde se va a buscar a buscado
+     * @param buscado la persona buscada
+     */
     public static Persona buscarPersona(List <Persona> personas, Persona buscado){
         for (Persona persona : personas) {
             if(persona.getnombre().equals(buscado.getnombre()) && persona.getapellido_Paterno().equals(buscado.getapellido_Paterno()) && persona.getapellido_Materno().equals(buscado.getapellido_Materno())){
@@ -324,6 +382,12 @@ public class AgendaElectronica {
         }
         return null;
     }
+    /*
+     * actualizarPersona modifica los atributos de una persona
+     * @param actual persona de donde se va a basar el cambio (en pocas palabras el original)
+     * @param nuevo persona con los atributos modificados al gusto del usuario, puede no haber cambiado nada
+     * @return se regresa a la persona modificada
+     */
     public static Persona actualizarPersona(Persona actual, Persona nuevo, Scanner scanner){
         String res;
         System.out.print("Nuevo Nombre: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
@@ -436,6 +500,12 @@ public class AgendaElectronica {
         nuevo.setNotas(actual.getnotas());
         return nuevo;
     }
+    /*
+     * telefonoValido se verifica que un número dado es valido
+     * Inicia con 55, tiene 10 digitos y puede ser vacio
+     * @param telefono número a verificar
+     * @return si o no
+     */
     public static boolean telefonoValido(String telefono){
         if(telefono.equals("")){
             return true;
@@ -448,6 +518,25 @@ public class AgendaElectronica {
         }
         return true;    
     }
+    /*
+     * telefonoValido se verifica que un número dado es valido
+     * Inicia con 55, tiene 10 digitos
+     * Similar al de arriba solo que este no puede ser la cadena vacía
+     * @param telefono número a verificar
+     * @return si o no
+     */
+    public static boolean telefonoValidoVacio(String telefono){
+        if(telefono.length()!=10){
+            return false;
+        }
+        if(telefono.charAt(0)!=telefono.charAt(1)){
+            return false;
+        }
+        return true;    
+    }
+    /*
+     * MAIN
+     */
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         int respuestaMenu=0;
