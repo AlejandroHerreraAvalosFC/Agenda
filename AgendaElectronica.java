@@ -4,6 +4,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.InputMismatchException;
 import java.util.List;
@@ -133,7 +137,13 @@ public class AgendaElectronica {
                 }
                 p.setmovil(temp_num);
                 System.out.print("Correo Electrónico:");
-                p.setcorreoElectronico(scanner.nextLine());
+                temp_num=scanner.nextLine();
+                while (!mailvalido(temp_num)) {
+                    System.out.println("No es un correo valido. Vuelve a intentarlo ");
+                    System.out.print("Correo: ");
+                    temp_num=scanner.nextLine();
+                }
+                p.setcorreoElectronico(temp_num);
                 System.out.print("Compañia:");
                 p.setCompañia(scanner.nextLine());
                 System.out.print("Puesto:");
@@ -141,54 +151,21 @@ public class AgendaElectronica {
                 System.out.print("URL:");
                 p.setURL(scanner.nextLine());
                 System.out.print("FB:");
-                p.setfb(scanner.nextLine());
+                temp_num=scanner.nextLine();
+                while (!fbvalido(temp_num)) {
+                    System.out.println("No es un Facebook valido. Vuelve a intentarlo ");
+                    System.out.print("FB: ");
+                    temp_num=scanner.nextLine();
+                }
+                p.setfb(temp_num);
                 System.out.print("IG:");
-                p.setIG(scanner.nextLine());
-                System.out.print("¿Desea agregar citas? (S/N):");
-                String citas="";
-                if (scanner.nextLine().equalsIgnoreCase("S")){
-                    do {
-                        try {
-                            System.out.print("¿Cuantas citas deseas agregar?:");
-                            int total_citas=scanner.nextInt();
-                            scanner.nextLine();
-                            int num=0;
-                            for(int i=0;i<total_citas;i++){
-                                Cita cita =new Cita(null, null, null);
-                                num=i+1;
-                                System.out.println("==== Registro de cita " + num + " ====");
-                                System.out.print("Título:");
-                                String temp=scanner.nextLine();
-                                cita.setTitulo(temp);
-                                citas=citas+ temp +"#";
-                                System.out.print("Fecha:");
-                                temp=scanner.nextLine();
-                                cita.setFecha(temp);
-                                citas=citas+ temp +"#";
-                                System.out.print("Hora:");
-                                temp=scanner.nextLine();
-                                cita.setHora(temp);
-                                citas=citas+ temp +"&";
-                                p.setCitas(citas);
-                                System.out.println("====Cita====");
-                                System.out.println("Título: " + cita.getTitulo());
-                                System.out.println("Fecha: " + cita.getDate());
-                                System.out.println("Hora: " + cita.getHora());
-                            }
-                            flag_citas=false;
-                            }
-                            catch(InputMismatchException e){
-                                flag=true;
-                                scanner.nextLine();
-                                System.out.println("Solo números.");
-                            }
-                            catch (Exception e) {
-                            }
-                    } while (flag_citas==true);
+                temp_num=scanner.nextLine();
+                while (!igvalido(temp_num)) {
+                    System.out.println("No es un Instagram valido. Vuelve a intentarlo ");
+                    System.out.print("IG: ");
+                    temp_num=scanner.nextLine();
                 }
-                else {
-                    p.setCitas("&");
-                }
+                p.setIG(temp_num);
                 System.out.print("Desea agregar notas: (S/N)");
                 String notas="";
                 if (scanner.nextLine().equalsIgnoreCase("S")){
@@ -221,6 +198,61 @@ public class AgendaElectronica {
                 }
                 else{
                     p.setNotas("&");
+                }
+                System.out.print("¿Desea agregar citas? (S/N):");
+                String citas="";
+                if (scanner.nextLine().equalsIgnoreCase("S")){
+                    do {
+                        try {
+                            System.out.print("¿Cuantas citas deseas agregar?:");
+                            int total_citas=scanner.nextInt();
+                            scanner.nextLine();
+                            int num=0;
+                            for(int i=0;i<total_citas;i++){
+                                Cita cita =new Cita(null, null, null);
+                                num=i+1;
+                                System.out.println("==== Registro de cita " + num + " ====");
+                                System.out.print("Título:");
+                                String temp=scanner.nextLine();
+                                cita.setTitulo(temp);
+                                citas=citas+ temp +"#";
+                                System.out.print("Fecha: (dd/mm/aaaa) ");
+                                temp=scanner.nextLine();
+                                while (!fechavalido(temp)) {
+                                    System.out.println("No es un fecha valida. Vuelve a intentarlo ");
+                                    System.out.print("Fecha: (dd/mm/aaaa) ");
+                                    temp=scanner.nextLine();
+                                }
+                                cita.setFecha(temp);
+                                citas=citas+ temp +"#";
+                                System.out.print("Hora: (hh:mm) ");
+                                temp=scanner.nextLine();
+                                while (!horavalida(temp)) {
+                                    System.out.println("No es un hora valida. Vuelve a intentarlo ");
+                                    System.out.print("Hora: (hh:mm) ");
+                                    temp=scanner.nextLine();
+                                }
+                                cita.setHora(temp);
+                                citas=citas+ temp +"&";
+                                p.setCitas(citas);
+                                System.out.println("====Cita====");
+                                System.out.println("Título: " + cita.getTitulo());
+                                System.out.println("Fecha: " + cita.getDate());
+                                System.out.println("Hora: " + cita.getHora());
+                            }
+                            flag_citas=false;
+                            }
+                            catch(InputMismatchException e){
+                                flag=true;
+                                scanner.nextLine();
+                                System.out.println("Solo números.");
+                            }
+                            catch (Exception e) {
+                            }
+                    } while (flag_citas==true);
+                }
+                else {
+                    p.setCitas("&");
                 }
                 System.out.print("Presiona enter para terminar :)");
                 scanner.nextLine();
@@ -454,6 +486,10 @@ public class AgendaElectronica {
             nuevo.setcorreoElectronico(actual.getcorreo_Electronico());
         }
         else{
+            while(!mailvalido(res)){
+                System.out.print("No es un correo electronico valido, veuelve intentarlo:");
+                res=scanner.nextLine();
+            }
             nuevo.setcorreoElectronico(res);
         }
         System.out.print("Nueva Compañia: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
@@ -486,6 +522,10 @@ public class AgendaElectronica {
             nuevo.setfb(actual.getFB());
         }
         else{
+            while(!fbvalido(res)){
+                System.out.print("No es un facebook valido, veuelve intentarlo:");
+                res=scanner.nextLine();
+            }
             nuevo.setfb(res);
         }
         System.out.print("Nuevo Instagram: (Dejar vacío si no se quiere cambiar, presiona Enter) ");
@@ -494,6 +534,10 @@ public class AgendaElectronica {
             nuevo.setIG(actual.getIG());
         }
         else{
+            while(!igvalido(res)){
+                System.out.print("No es un Instagram valido, veuelve intentarlo:");
+                res=scanner.nextLine();
+            }
             nuevo.setIG(res);
         }
         nuevo.setCitas(actual.getCitas());
@@ -533,6 +577,73 @@ public class AgendaElectronica {
             return false;
         }
         return true;    
+    }
+    /*
+     * FB valido valida si un facebook contiene la secuencia "fb.com/"
+     * @param fb el facebook a validar
+     * @return si o no
+     */
+    public static Boolean fbvalido(String fb){
+        if(!fb.contains("fb.com/")){
+            return false;
+        }
+        return true;
+    }
+    /*
+     * IG valido valida si un IG inicia con "@"
+     * @param ig el ig a validar
+     * @return si o no
+     */
+    public static Boolean igvalido(String ig){
+        if(ig.charAt(0)!='@'){
+            return false;
+        }
+        return true;
+    }
+    /*
+     * Correo valido valida si un correo contiene la secuencia "@"
+     * @param mail el correo a validar
+     * @return si o no
+     */
+    public static Boolean mailvalido(String mail){
+        if(!mail.contains("@")){
+            return false;
+        }
+        return true;
+    }
+    /*
+     * fecha valido valida si una fecha es valida
+     * @param fecha la fecha a validar
+     * @return si o no
+     */
+    public static Boolean fechavalido(String fecha) {
+    if (fecha == "" || !fecha.matches("\\d{2}/\\d{2}/\\d{4}")) {
+        return false;
+    }
+    try {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate.parse(fecha, formatter);
+        return true;
+    } catch (DateTimeParseException e) {
+        return false;
+    }
+    }
+    /*
+     * horaValida si una hora es valida
+     * @param hora la hora a validar
+     * @return si o no
+     */
+    public static Boolean horavalida(String hora) {
+        if (hora == "" || !hora.matches("\\d{2}:\\d{2}")) {
+            return false;
+        }
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime.parse(hora, formatter);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
     /*
      * MAIN
@@ -610,6 +721,7 @@ public class AgendaElectronica {
                     actual=buscarPersona(encontradosArchivo, actual);
                     if (actual!=null){
                         List<Persona> actuales=eliminaPersona("ejemplo.data", actual);
+                        System.out.println("Se encontro exitosamente el registro de "+ actual.getnombre() + " " + actual.getapellido_Paterno()+ " " + actual.getapellido_Materno());
                         modificado=actualizarPersona(actual, modificado, scanner);
                         actuales.add(modificado);
                         escribirArchivo(actuales);
